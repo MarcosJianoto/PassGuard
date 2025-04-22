@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 public class UserPasswords {
 
 	private Integer id;
-
 	private String email;
 	private String password;
 	private Category category;
