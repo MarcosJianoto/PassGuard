@@ -6,20 +6,47 @@ import com.passguard.enums.Category;
 import com.passguard.enums.Description;
 import com.passguard.enums.Status;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user_passwords")
 public class UserPasswords {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_user_passwords")
+	@SequenceGenerator(name = "sequence_user_passwords", sequenceName = "sequence_user_passwords", allocationSize = 1)
 	private Integer id;
+
+	@Column(name = "email", nullable = false)
 	private String email;
+
+	@Column(name = "password", nullable = false)
 	private String password;
+
+	@Column(name = "category", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Category category;
+
+	@Column(name = "description", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Description description;
+
+	@Column(name = "created_at", nullable = false)
 	private LocalDate createdAt;
+
+	@Column(name = "updated_at", nullable = false)
 	private LocalDate updatedAt;
+
+	@Column(name = "status", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Status status;
 
 	public UserPasswords() {

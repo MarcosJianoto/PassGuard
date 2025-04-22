@@ -8,4 +8,6 @@ import com.passguard.entities.UserPasswords;
 @Repository
 public interface UserPasswordsRepository extends JpaRepository<UserPasswords, Integer> {
 
+	boolean existsByEmailAndDescription(String email, String description);
+
 }
