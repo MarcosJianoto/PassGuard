@@ -30,7 +30,7 @@ public class UserPasswordsService {
 				Description.valueOf(password.description()));
 
 		if (Boolean.TRUE.equals(userPasswords)) {
-			throw new IllegalArgumentException("Esse e-mail e descrijão já existem!");
+			throw new IllegalArgumentException("Esse e-mail e descrição já existem!");
 		}
 
 		return false;
@@ -43,6 +43,7 @@ public class UserPasswordsService {
 
 		while (strenghtPassword.getScore() < 4) {
 			generatePassword = GeneratePassword.generatePasswordString(lenght);
+			strenghtPassword = tester.measure(generatePassword);
 		}
 
 		return generatePassword;
@@ -66,9 +67,9 @@ public class UserPasswordsService {
 		existsPassword(password);
 
 		String generatePassword = GeneratePassword.generatePasswordString(lenght);
-		testerPassword(generatePassword, lenght);
+		String passwordOk = testerPassword(generatePassword, lenght);
 
-		UserPasswords userPasswords = new UserPasswords(password.email(), generatePassword,
+		UserPasswords userPasswords = new UserPasswords(password.email(), passwordOk,
 				Category.valueOf(password.category()), Description.valueOf(password.description()), LocalDate.now(),
 				null, Status.valueOf(password.status()));
 
@@ -76,10 +77,14 @@ public class UserPasswordsService {
 
 	}
 
+	public UserPasswords userPasswordsFindById(Integer id) {
+		return userPasswordsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+	}
+
 	public void updateUserPasswordComplete(UserPasswordsUpdateDTO password, Integer id) {
 
-		UserPasswords userPasswords = userPasswordsRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+		UserPasswords userPasswords = userPasswordsFindById(id);
 
 		userPasswords.setEmail(password.email());
 		userPasswords.setPassword(password.password());
@@ -93,8 +98,7 @@ public class UserPasswordsService {
 
 	public void updateUserEmailAndPassword(UserPasswordsUpdateDTO password, Integer id) {
 
-		UserPasswords userPasswords = userPasswordsRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+		UserPasswords userPasswords = userPasswordsFindById(id);
 
 		userPasswords.setEmail(password.email());
 		userPasswords.setPassword(password.password());
@@ -105,8 +109,7 @@ public class UserPasswordsService {
 
 	public void updatePassword(UserPasswordsUpdateDTO password, Integer id) {
 
-		UserPasswords userPasswords = userPasswordsRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+		UserPasswords userPasswords = userPasswordsFindById(id);
 
 		userPasswords.setPassword(password.password());
 		userPasswords.setUpdatedAt(LocalDate.now());
@@ -116,13 +119,12 @@ public class UserPasswordsService {
 
 	public void updateRandomPassword(Integer id, Integer lenght) {
 
-		UserPasswords userPasswords = userPasswordsRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+		UserPasswords userPasswords = userPasswordsFindById(id);
 
 		String generatePassword = GeneratePassword.generatePasswordString(lenght);
-		testerPassword(generatePassword, lenght);
+		String passwordOk = testerPassword(generatePassword, lenght);
 
-		userPasswords.setPassword(generatePassword);
+		userPasswords.setPassword(passwordOk);
 		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);

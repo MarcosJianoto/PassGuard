@@ -16,15 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.passguard.dtos.UserPasswordOnlyEmailAndPasswordDTO;
 import com.passguard.dtos.UserPasswordsDTO;
 import com.passguard.dtos.UserPasswordsUpdateDTO;
-import com.passguard.repository.UserPasswordsRepository;
 import com.passguard.services.UserPasswordsService;
 
 @RestController
 @RequestMapping("/user")
 public class UserPasswordsController {
-
-	@Autowired
-	private UserPasswordsRepository userPasswordsRepository;
 
 	@Autowired
 	private UserPasswordsService userPasswordsService;
