@@ -133,7 +133,8 @@ public class UserPasswordsService {
 		return userPasswordsRepository.findAll().stream()
 				.map((user) -> new UserPasswordsDTO(user.getId(), user.getEmail(), user.getPassword(),
 						user.getCategory().toString(), user.getDescription().toString(), user.getCreatedAt().toString(),
-						user.getUpdatedAt().toString(), user.getStatus().toString()))
+						user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : null,
+						user.getStatus().toString()))
 				.toList();
 	}
 
@@ -141,7 +142,7 @@ public class UserPasswordsService {
 
 		return userPasswordsRepository.findAll().stream()
 				.map((user) -> new UserPasswordOnlyEmailAndPasswordDTO(user.getEmail(), user.getPassword(),
-						user.getCategory().toString(), user.getDescription().toString()))
+						user.getDescription().toString()))
 				.toList();
 	}
 
@@ -152,7 +153,8 @@ public class UserPasswordsService {
 
 		return new UserPasswordsDTO(id, userPasswords.getEmail(), userPasswords.getPassword(),
 				userPasswords.getCategory().toString(), userPasswords.getDescription().toString(),
-				userPasswords.getCreatedAt().toString(), userPasswords.getUpdatedAt().toString(),
+				userPasswords.getCreatedAt().toString(),
+				userPasswords.getUpdatedAt() != null ? userPasswords.getUpdatedAt().toString() : null,
 				userPasswords.getStatus().toString());
 	}
 
