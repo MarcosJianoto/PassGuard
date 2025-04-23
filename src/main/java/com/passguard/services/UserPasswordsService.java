@@ -1,6 +1,9 @@
 package com.passguard.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
 import com.passguard.dtos.UserPasswordsDTO;
+import com.passguard.dtos.UserPasswordsUpdateDTO;
 import com.passguard.entities.UserPasswords;
 import com.passguard.enums.Category;
 import com.passguard.enums.Description;
@@ -49,12 +53,8 @@ public class UserPasswordsService {
 
 		existsPassword(password);
 
-		Category category = Category.valueOf(password.category());
-		Description description = Description.valueOf(password.description());
-		Status status = Status.valueOf(password.status());
-
-		return new UserPasswords(password.email(), password.password(), category, description, LocalDate.now(), null,
-				status);
+		return new UserPasswords(password.email(), password.password(), Category.valueOf(password.category()),
+				Description.valueOf(password.description()), LocalDate.now(), null, Status.valueOf(password.status()));
 	}
 
 	public void saveUserPassword(UserPasswordsDTO password) {
@@ -66,22 +66,51 @@ public class UserPasswordsService {
 
 		existsPassword(password);
 
-		Category category = Category.valueOf(password.category());
-		Description description = Description.valueOf(password.description());
-		Status status = Status.valueOf(password.status());
-
 		String generatePassword = GeneratePassword.generatePasswordString(lenght);
 		testerPassword(generatePassword, lenght);
 
-		UserPasswords userPasswords = new UserPasswords(password.email(), generatePassword, category, description,
-				LocalDate.now(), null, status);
+		UserPasswords userPasswords = new UserPasswords(password.email(), generatePassword,
+				Category.valueOf(password.category()), Description.valueOf(password.description()), LocalDate.now(),
+				null, Status.valueOf(password.status()));
 
 		userPasswordsRepository.save(userPasswords);
 
 	}
 
-	public void updateUserPassword(UserPasswordsDTO password, Integer id) {
+	public void updateUserPasswordComplete(UserPasswordsUpdateDTO password, Integer id) {
 
+		UserPasswords userPasswords = userPasswordsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+
+		userPasswords.setEmail(password.email());
+		userPasswords.setPassword(password.password());
+		userPasswords.setCategory(Category.valueOf(password.category()));
+		userPasswords.setUpdatedAt(LocalDate.now());
+		userPasswords.setDescription(Description.valueOf(password.description()));
+		userPasswords.setStatus(Status.valueOf(password.status()));
+
+		userPasswordsRepository.save(userPasswords);
+	}
+
+	public void updateUserEmailAndPassword(UserPasswordsUpdateDTO password, Integer id) {
+
+		UserPasswords userPasswords = userPasswordsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+
+		userPasswords.setEmail(password.email());
+		userPasswords.setPassword(password.password());
+
+		userPasswordsRepository.save(userPasswords);
+	}
+
+	public void updatePassword(UserPasswordsUpdateDTO password, Integer id) {
+
+		UserPasswords userPasswords = userPasswordsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+
+		userPasswords.setPassword(password.password());
+
+		userPasswordsRepository.save(userPasswords);
 	}
 
 	public void deletePassword(Integer id) {
