@@ -11,6 +11,7 @@ import com.passguard.enums.Category;
 import com.passguard.enums.Description;
 import com.passguard.enums.Status;
 import com.passguard.repository.UserPasswordsRepository;
+import com.passguard.utils.GeneratePassword;
 
 @Service
 public class UserPasswordsService {
@@ -18,27 +19,58 @@ public class UserPasswordsService {
 	@Autowired
 	private UserPasswordsRepository userPasswordsRepository;
 
-	private Boolean existsPassword(UserPasswordsDTO password) {
-		return userPasswordsRepository.existsByEmailAndDescription(password.email(), password.description());
-	}
+	private boolean existsPassword(UserPasswordsDTO password) {
 
-	public void saveUserPassword(UserPasswordsDTO password) {
+		boolean userPasswords = userPasswordsRepository.existsByEmailAndDescription(password.email(),
+				password.description());
 
-		if (Boolean.TRUE.equals(existsPassword(password))) {
+		if (Boolean.TRUE.equals(userPasswords)) {
 			throw new IllegalArgumentException("Esse e-mail e descrijão já existem!");
 		}
+
+		return false;
+	}
+
+	public UserPasswords userDtoToEntity(UserPasswordsDTO password) {
+
+		existsPassword(password);
 
 		Category category = Category.valueOf(password.category());
 		Description description = Description.valueOf(password.description());
 		Status status = Status.valueOf(password.status());
 
-		UserPasswords userPasswords = new UserPasswords(password.email(), password.email(), category, description,
+		return new UserPasswords(password.email(), password.password(), category, description, LocalDate.now(), null,
+				status);
+	}
+
+	public void saveUserPassword(UserPasswordsDTO password) {
+		UserPasswords userPasswords = userDtoToEntity(password);
+		userPasswordsRepository.save(userPasswords);
+	}
+
+	public void saveUserPasswordWithRandomPassword(UserPasswordsDTO password, Integer lenght) {
+
+		existsPassword(password);
+
+		Category category = Category.valueOf(password.category());
+		Description description = Description.valueOf(password.description());
+		Status status = Status.valueOf(password.status());
+
+		String generatePassword = GeneratePassword.generatePasswordString(lenght);
+
+		UserPasswords userPasswords = new UserPasswords(password.email(), generatePassword, category, description,
 				LocalDate.now(), null, status);
+
+		userPasswordsRepository.save(userPasswords);
 
 	}
 
-	public void saveUserAutomaticPassword(UserPasswordsDTO userPasswordsDTO) {
+	public void updateUserPassword(UserPasswordsDTO password, Integer id) {
 
+	}
+
+	public void deletePassword(Integer id) {
+		userPasswordsRepository.deleteById(id);
 	}
 
 }
