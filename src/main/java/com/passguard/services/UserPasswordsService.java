@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 import com.passguard.dtos.UserPasswordsDTO;
 import com.passguard.entities.UserPasswords;
 import com.passguard.enums.Category;
@@ -29,6 +31,18 @@ public class UserPasswordsService {
 		}
 
 		return false;
+	}
+
+	public String testerPassword(String generatePassword, Integer lenght) {
+		Zxcvbn tester = new Zxcvbn();
+		Strength strenghtPassword = tester.measure(generatePassword);
+		strenghtPassword.getScore();
+
+		while (strenghtPassword.getScore() < 3) {
+			generatePassword = GeneratePassword.generatePasswordString(lenght);
+		}
+
+		return generatePassword;
 	}
 
 	public UserPasswords userDtoToEntity(UserPasswordsDTO password) {
@@ -57,6 +71,7 @@ public class UserPasswordsService {
 		Status status = Status.valueOf(password.status());
 
 		String generatePassword = GeneratePassword.generatePasswordString(lenght);
+		testerPassword(generatePassword, lenght);
 
 		UserPasswords userPasswords = new UserPasswords(password.email(), generatePassword, category, description,
 				LocalDate.now(), null, status);
