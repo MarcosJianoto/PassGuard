@@ -1,12 +1,14 @@
 package com.passguard.services;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
+import com.passguard.dtos.UserPasswordOnlyEmailAndPasswordDTO;
 import com.passguard.dtos.UserPasswordsDTO;
 import com.passguard.dtos.UserPasswordsUpdateDTO;
 import com.passguard.entities.UserPasswords;
@@ -96,6 +98,7 @@ public class UserPasswordsService {
 
 		userPasswords.setEmail(password.email());
 		userPasswords.setPassword(password.password());
+		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);
 	}
@@ -106,8 +109,37 @@ public class UserPasswordsService {
 				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
 
 		userPasswords.setPassword(password.password());
+		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);
+	}
+
+	public List<UserPasswordsDTO> getAllPasswords() {
+
+		return userPasswordsRepository.findAll().stream()
+				.map((user) -> new UserPasswordsDTO(user.getId(), user.getEmail(), user.getPassword(),
+						user.getCategory().toString(), user.getDescription().toString(), user.getCreatedAt().toString(),
+						user.getUpdatedAt().toString(), user.getStatus().toString()))
+				.toList();
+	}
+
+	public List<UserPasswordOnlyEmailAndPasswordDTO> getAllOnlyEmailAndPassword() {
+
+		return userPasswordsRepository.findAll().stream()
+				.map((user) -> new UserPasswordOnlyEmailAndPasswordDTO(user.getEmail(), user.getPassword(),
+						user.getCategory().toString(), user.getDescription().toString()))
+				.toList();
+	}
+
+	public UserPasswordsDTO getUserPasswordId(Integer id) {
+
+		UserPasswords userPasswords = userPasswordsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("User and Password not found"));
+
+		return new UserPasswordsDTO(id, userPasswords.getEmail(), userPasswords.getPassword(),
+				userPasswords.getCategory().toString(), userPasswords.getDescription().toString(),
+				userPasswords.getCreatedAt().toString(), userPasswords.getUpdatedAt().toString(),
+				userPasswords.getStatus().toString());
 	}
 
 	public void deletePassword(Integer id) {
