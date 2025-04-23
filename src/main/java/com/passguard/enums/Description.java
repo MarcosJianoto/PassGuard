@@ -7,7 +7,7 @@ public enum Description {
 	EPIC_GAMES("Epic Games"), NETFLIX("Netflix"), AMAZON("Amazon"), MERCADO_LIVRE("Mercado Livre"), NUBANK("Nubank"),
 	ITAU("Itaú"), CAIXA("Caixa Econômica"), UDEMY("Udemy"), PERSONAL_EMAIL("Email Pessoal"),
 	WORK_EMAIL("Email Corporativo"), SYSTEM_ACCESS("Acesso a Sistemas"), CLOUD_SERVICE("Serviço de Nuvem"),
-	OTHER("Outro");
+	OTHER("Outro"), STONE("Stone"), CRUNCHYROLL("Crunchyroll"), GOV("Gov");
 
 	private final String label;
 

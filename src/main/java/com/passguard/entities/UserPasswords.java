@@ -31,22 +31,22 @@ public class UserPasswords {
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "category", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "category", nullable = false)
 	private Category category;
 
-	@Column(name = "description", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "description", nullable = false)
 	private Description description;
 
 	@Column(name = "created_at", nullable = false)
 	private LocalDate createdAt;
 
-	@Column(name = "updated_at", nullable = false)
+	@Column(name = "updated_at")
 	private LocalDate updatedAt;
 
-	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "status", nullable = false)
 	private Status status;
 
 	public UserPasswords() {

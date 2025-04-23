@@ -27,7 +27,7 @@ public class UserPasswordsService {
 	private boolean existsPassword(UserPasswordsDTO password) {
 
 		boolean userPasswords = userPasswordsRepository.existsByEmailAndDescription(password.email(),
-				password.description());
+				Description.valueOf(password.description()));
 
 		if (Boolean.TRUE.equals(userPasswords)) {
 			throw new IllegalArgumentException("Esse e-mail e descrijão já existem!");
@@ -41,7 +41,7 @@ public class UserPasswordsService {
 		Strength strenghtPassword = tester.measure(generatePassword);
 		strenghtPassword.getScore();
 
-		while (strenghtPassword.getScore() < 3) {
+		while (strenghtPassword.getScore() < 4) {
 			generatePassword = GeneratePassword.generatePasswordString(lenght);
 		}
 
@@ -109,6 +109,20 @@ public class UserPasswordsService {
 				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
 
 		userPasswords.setPassword(password.password());
+		userPasswords.setUpdatedAt(LocalDate.now());
+
+		userPasswordsRepository.save(userPasswords);
+	}
+
+	public void updateRandomPassword(Integer id, Integer lenght) {
+
+		UserPasswords userPasswords = userPasswordsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Senha não encontrada"));
+
+		String generatePassword = GeneratePassword.generatePasswordString(lenght);
+		testerPassword(generatePassword, lenght);
+
+		userPasswords.setPassword(generatePassword);
 		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);
