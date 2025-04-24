@@ -9,18 +9,14 @@ import com.passguard.dtos.OldPasswordsDTO;
 import com.passguard.entities.OldPasswords;
 import com.passguard.entities.UserPasswords;
 import com.passguard.repository.OldPasswordsRepository;
-import com.passguard.repository.UserPasswordsRepository;
 
 @Service
 public class OldPasswordsService {
 
 	private OldPasswordsRepository oldPasswordsRepository;
-	private UserPasswordsRepository userPasswordsRepository;
 
-	public OldPasswordsService(OldPasswordsRepository oldPasswordsRepository,
-			UserPasswordsRepository userPasswordsRepository) {
+	public OldPasswordsService(OldPasswordsRepository oldPasswordsRepository) {
 		this.oldPasswordsRepository = oldPasswordsRepository;
-		this.userPasswordsRepository = userPasswordsRepository;
 	}
 
 	public void createOldPasswords(UserPasswords userPasswords) {
@@ -41,11 +37,16 @@ public class OldPasswordsService {
 				.orElseThrow(() -> new IllegalArgumentException("Old Password not found"));
 
 		return new OldPasswordsDTO(oldPasswords.getPassword(), oldPasswords.getEmail(), oldPasswords.getDescription(),
-				LocalDate.now());
+				oldPasswords.getChangedAt());
 
 	}
 
 	public List<OldPasswordsDTO> getAllPasswordsDTOs() {
+
+		return oldPasswordsRepository.findAll().stream()
+				.map((oldPassword) -> new OldPasswordsDTO(oldPassword.getPassword(), oldPassword.getEmail(),
+						oldPassword.getDescription(), oldPassword.getChangedAt()))
+				.toList();
 
 	}
 
