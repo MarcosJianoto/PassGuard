@@ -42,14 +42,14 @@ public class OldPasswordsService {
 	}
 
 	public List<OldPasswordsDTO> getAllPasswordsDTOs() {
-
 		return oldPasswordsRepository.findAll().stream()
 				.map((oldPassword) -> new OldPasswordsDTO(oldPassword.getPassword(), oldPassword.getEmail(),
 						oldPassword.getDescription(), oldPassword.getChangedAt()))
 				.toList();
-
 	}
 
+	
+	
 	public void deleteOldPassword(Integer id) {
 		oldPasswordsRepository.deleteById(id);
 	}
