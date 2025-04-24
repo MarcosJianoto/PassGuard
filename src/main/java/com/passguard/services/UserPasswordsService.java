@@ -15,6 +15,7 @@ import com.passguard.entities.UserPasswords;
 import com.passguard.enums.Category;
 import com.passguard.enums.Description;
 import com.passguard.enums.Status;
+import com.passguard.repository.OldPasswordsRepository;
 import com.passguard.repository.UserPasswordsRepository;
 import com.passguard.utils.GeneratePassword;
 
@@ -23,6 +24,9 @@ public class UserPasswordsService {
 
 	@Autowired
 	private UserPasswordsRepository userPasswordsRepository;
+
+	@Autowired
+	private OldPasswordsService oldPasswordsService;
 
 	private boolean existsPassword(UserPasswordsDTO password) {
 
@@ -60,6 +64,8 @@ public class UserPasswordsService {
 	public void saveUserPassword(UserPasswordsDTO password) {
 		UserPasswords userPasswords = userDtoToEntity(password);
 		userPasswordsRepository.save(userPasswords);
+
+		oldPasswordsService.createOldPasswords(userPasswords);
 	}
 
 	public void saveUserPasswordWithRandomPassword(UserPasswordsDTO password, Integer lenght) {
@@ -74,6 +80,7 @@ public class UserPasswordsService {
 				null, Status.valueOf(password.status()));
 
 		userPasswordsRepository.save(userPasswords);
+		oldPasswordsService.createOldPasswords(userPasswords);
 
 	}
 
@@ -94,6 +101,8 @@ public class UserPasswordsService {
 		userPasswords.setStatus(Status.valueOf(password.status()));
 
 		userPasswordsRepository.save(userPasswords);
+		oldPasswordsService.createOldPasswords(userPasswords);
+
 	}
 
 	public void updateUserEmailAndPassword(UserPasswordsUpdateDTO password, Integer id) {
@@ -105,6 +114,8 @@ public class UserPasswordsService {
 		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);
+		oldPasswordsService.createOldPasswords(userPasswords);
+
 	}
 
 	public void updatePassword(UserPasswordsUpdateDTO password, Integer id) {
@@ -115,6 +126,8 @@ public class UserPasswordsService {
 		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);
+		oldPasswordsService.createOldPasswords(userPasswords);
+
 	}
 
 	public void updateRandomPassword(Integer id, Integer lenght) {
@@ -128,6 +141,8 @@ public class UserPasswordsService {
 		userPasswords.setUpdatedAt(LocalDate.now());
 
 		userPasswordsRepository.save(userPasswords);
+		oldPasswordsService.createOldPasswords(userPasswords);
+
 	}
 
 	public List<UserPasswordsDTO> getAllPasswords() {
