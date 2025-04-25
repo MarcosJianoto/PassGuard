@@ -26,7 +26,7 @@ public class Notifications {
 	private UserPasswords userPasswords;
 
 	@Column(name = "notify_at", nullable = false)
-	private LocalDate date;
+	private LocalDate days;
 
 	public Notifications() {
 
@@ -34,14 +34,14 @@ public class Notifications {
 
 	public Notifications(UserPasswords userPasswords, LocalDate date) {
 		this.userPasswords = userPasswords;
-		this.date = date;
+		this.days = date;
 	}
 
 	public Notifications(Integer id, UserPasswords userPasswords, LocalDate date) {
 		super();
 		this.id = id;
 		this.userPasswords = userPasswords;
-		this.date = date;
+		this.days = date;
 	}
 
 	public Integer getId() {
@@ -61,11 +61,11 @@ public class Notifications {
 	}
 
 	public LocalDate getDate() {
-		return date;
+		return days;
 	}
 
 	public void setDate(LocalDate date) {
-		this.date = date;
+		this.days = date;
 	}
 
 }
