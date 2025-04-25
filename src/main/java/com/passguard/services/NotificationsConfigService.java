@@ -9,6 +9,8 @@ import com.passguard.repository.NotificationsConfigRepository;
 @Service
 public class NotificationsConfigService {
 
+	private static final Integer CONFIG_ID = 1;
+
 	private NotificationsConfigRepository notificationsConfigRepository;
 
 	public NotificationsConfigService(NotificationsConfigRepository notificationsConfigRepository) {
@@ -17,22 +19,27 @@ public class NotificationsConfigService {
 
 	public void createNotificationsConfig(NotificationsConfigDTO notificationsConfigDTO) {
 
-		if (notificationsConfigRepository.existsById(1)) {
+		if (notificationsConfigRepository.existsById(CONFIG_ID)) {
 			throw new IllegalArgumentException(
 					"Não é possível criar uma nova configuração de notificação, somente desativar!");
 		}
 
-		notificationsConfigRepository
-				.save(new NotificationsConfig(1, notificationsConfigDTO.days(), notificationsConfigDTO.active()));
+		notificationsConfigRepository.save(
+				new NotificationsConfig(CONFIG_ID, notificationsConfigDTO.days(), notificationsConfigDTO.active()));
 	}
 
 	public void alterNotificationsConfig(NotificationsConfigDTO notificationsConfigDTO) {
 
-		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(1)
+		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(CONFIG_ID)
 				.orElseThrow(() -> new IllegalArgumentException("Notification Config precisa ser criado!"));
 
-		notificationsConfig.setDate(notificationsConfigDTO.days());
-		notificationsConfig.setActive(notificationsConfigDTO.active());
+		if (notificationsConfigDTO.days() != null) {
+			notificationsConfig.setDate(notificationsConfigDTO.days());
+		}
+
+		if (notificationsConfigDTO.active() != null) {
+			notificationsConfig.setActive(notificationsConfigDTO.active());
+		}
 
 		notificationsConfigRepository.save(notificationsConfig);
 
@@ -40,9 +47,7 @@ public class NotificationsConfigService {
 
 	public NotificationsConfigDTO getNotificationConfig() {
 
-		Integer id = 1;
-
-		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(id)
+		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(CONFIG_ID)
 				.orElseThrow(() -> new IllegalArgumentException("Old Password not found"));
 
 		return new NotificationsConfigDTO(notificationsConfig.getDate(), notificationsConfig.getActive());
