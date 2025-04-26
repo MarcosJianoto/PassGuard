@@ -28,17 +28,17 @@ public class NotificationsConfigService {
 				new NotificationsConfig(CONFIG_ID, notificationsConfigDTO.days(), notificationsConfigDTO.active()));
 	}
 
-	public void alterNotificationsConfig(NotificationsConfigDTO notificationsConfigDTO) {
+	public void alterNotificationsConfig(NotificationsConfigDTO notification) {
 
 		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(CONFIG_ID)
 				.orElseThrow(() -> new IllegalArgumentException("Notification Config precisa ser criado!"));
 
-		if (notificationsConfigDTO.days() != null) {
-			notificationsConfig.setDate(notificationsConfigDTO.days());
+		if (notification.days() != null) {
+			notificationsConfig.setDate(notification.days());
 		}
 
-		if (notificationsConfigDTO.active() != null) {
-			notificationsConfig.setActive(notificationsConfigDTO.active());
+		if (notification.active() != null) {
+			notificationsConfig.setActive(notification.active());
 		}
 
 		notificationsConfigRepository.save(notificationsConfig);
