@@ -28,29 +28,28 @@ public class NotificationsConfigService {
 				new NotificationsConfig(CONFIG_ID, notificationsConfigDTO.days(), notificationsConfigDTO.active()));
 	}
 
-	public void alterNotificationsConfig(NotificationsConfigDTO notification) {
-
-		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(CONFIG_ID)
+	public NotificationsConfig existsById() {
+		return notificationsConfigRepository.findById(CONFIG_ID)
 				.orElseThrow(() -> new IllegalArgumentException("Notification Config precisa ser criado!"));
+	}
 
+	public void alterNotificationsConfig(NotificationsConfigDTO notification) {
+		NotificationsConfig notificationsConfig = existsById();
 		if (notification.days() != null) {
 			notificationsConfig.setDate(notification.days());
 		}
-
 		if (notification.active() != null) {
 			notificationsConfig.setActive(notification.active());
 		}
-
 		notificationsConfigRepository.save(notificationsConfig);
-
 	}
 
 	public NotificationsConfigDTO getNotificationConfig() {
-
-		NotificationsConfig notificationsConfig = notificationsConfigRepository.findById(CONFIG_ID)
-				.orElseThrow(() -> new IllegalArgumentException("Old Password not found"));
-
+		NotificationsConfig notificationsConfig = existsById();
 		return new NotificationsConfigDTO(notificationsConfig.getDate(), notificationsConfig.getActive());
+	}
 
+	public void deleteById() {
+		notificationsConfigRepository.deleteById(CONFIG_ID);
 	}
 }
