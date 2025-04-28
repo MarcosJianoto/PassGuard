@@ -40,9 +40,9 @@ public class NotificationsService {
 			LocalDate cutOff = LocalDate.now().minusDays(notificationsConfigService.getNotificationConfig().days());
 
 			if (cutOff.isEqual(date) || cutOff.isBefore(date)) {
-
 				Notifications notifications = new Notifications(userPasswords, date);
 
+				notificationsRepository.save(notifications);
 			}
 		}
 	}
@@ -50,8 +50,6 @@ public class NotificationsService {
 	public void removeNotifications(UserPasswords userPasswords) {
 
 		List<Notifications> notifications = notificationsRepository.findAll();
-
-		List<UserPasswords> userPass = userPasswordsRepository.findAll();
 
 		for (Notifications notify : notifications) {
 
