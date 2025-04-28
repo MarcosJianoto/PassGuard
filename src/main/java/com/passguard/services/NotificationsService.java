@@ -1,12 +1,14 @@
 package com.passguard.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.passguard.dtos.NotificationsSendEmailDTO;
 import com.passguard.entities.Notifications;
 import com.passguard.entities.UserPasswords;
 import com.passguard.repository.NotificationsRepository;
@@ -24,7 +26,7 @@ public class NotificationsService {
 	@Autowired
 	private NotificationsConfigService notificationsConfigService;
 
-	public void addNotifications(UserPasswords userPasswords) {
+	public void addNotifications() {
 
 		List<UserPasswords> userPass = userPasswordsRepository.findAll();
 
@@ -40,7 +42,7 @@ public class NotificationsService {
 			LocalDate cutOff = LocalDate.now().minusDays(notificationsConfigService.getNotificationConfig().days());
 
 			if (cutOff.isEqual(date) || cutOff.isBefore(date)) {
-				Notifications notifications = new Notifications(userPasswords, date);
+				Notifications notifications = new Notifications(user, date);
 
 				notificationsRepository.save(notifications);
 			}
@@ -61,8 +63,23 @@ public class NotificationsService {
 			if (cutOff.isAfter(updatedAt)) {
 				notificationsRepository.deleteById(notify.getId());
 			}
-
 		}
+	}
+
+	public List<NotificationsSendEmailDTO> sendEmailById(UserPasswords userPasswords) {
+
+		removeNotifications(userPasswords);
+		addNotifications();
+
+		List<Notifications> notifications = notificationsRepository.findAll();
+		List<NotificationsSendEmailDTO> emailsSendNotify = new ArrayList<>();
+
+		for (Notifications not : notifications) {
+			NotificationsSendEmailDTO notfic = new NotificationsSendEmailDTO(not.getId());
+			emailsSendNotify.add(notfic);
+		}
+
+		return emailsSendNotify;
 
 	}
 
