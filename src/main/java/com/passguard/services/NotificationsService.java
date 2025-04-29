@@ -34,7 +34,7 @@ public class NotificationsService {
 
 			Optional<Notifications> listUsersNotifications = notificationsRepository.findById(user.getId());
 
-			if (listUsersNotifications.isPresent()) {
+			if (listUsersNotifications.isPresent() || user.getUpdatedAt() == null) {
 				continue;
 			}
 
@@ -49,7 +49,7 @@ public class NotificationsService {
 		}
 	}
 
-	public void removeNotifications(UserPasswords userPasswords) {
+	public void removeNotifications() {
 
 		List<Notifications> notifications = notificationsRepository.findAll();
 
@@ -60,16 +60,16 @@ public class NotificationsService {
 			LocalDate updatedAt = passwords.getUpdatedAt();
 			LocalDate cutOff = LocalDate.now().minusDays(notificationsConfigService.getNotificationConfig().days());
 
-			if (cutOff.isAfter(updatedAt)) {
+			if (cutOff.isBefore(updatedAt)) {
 				notificationsRepository.deleteById(notify.getId());
 			}
 		}
 	}
 
-	public List<NotificationsSendEmailDTO> sendEmailById(UserPasswords userPasswords) {
+	public List<NotificationsSendEmailDTO> sendEmailById() {
 
-		removeNotifications(userPasswords);
 		addNotifications();
+		removeNotifications();
 
 		List<Notifications> notifications = notificationsRepository.findAll();
 		List<NotificationsSendEmailDTO> emailsSendNotify = new ArrayList<>();

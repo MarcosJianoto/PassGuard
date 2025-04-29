@@ -13,12 +13,12 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "password_history")
+@Table(name = "notifications")
 public class Notifications {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_password_history")
-	@SequenceGenerator(name = "sequence_password_history", sequenceName = "sequence_password_history", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_notifications")
+	@SequenceGenerator(name = "sequence_notifications", sequenceName = "sequence_notifications", allocationSize = 1)
 	private Integer id;
 
 	@ManyToOne
