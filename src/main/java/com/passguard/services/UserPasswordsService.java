@@ -34,7 +34,7 @@ public class UserPasswordsService {
 				Description.valueOf(password.description()));
 
 		if (Boolean.TRUE.equals(userPasswords)) {
-			throw new IllegalArgumentException("Esse e-mail e descrição já existem!");
+			throw new IllegalArgumentException("Esse e-mail e descrição já existem!"); 
 		}
 
 		return false;
